@@ -5,6 +5,11 @@ public class Truck {
     private Integer location_id;
     private Integer loaded_bikes_count;
 
+    public Truck(Integer id, Integer location_id, Integer loaded_bikes_count) {
+        this.id = id;
+        this.location_id = location_id;
+        this.loaded_bikes_count = loaded_bikes_count;
+    }
 
     public Integer getId() {
         return id;

@@ -5,6 +5,10 @@ public class Location {
     private Integer id;
     private Integer located_bikes_count;
 
+    public Location(Integer id, Integer located_bikes_count) {
+        this.id = id;
+        this.located_bikes_count = located_bikes_count;
+    }
 
     public Integer getId() {
         return id;

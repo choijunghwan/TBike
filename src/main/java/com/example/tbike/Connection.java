@@ -3,10 +3,7 @@ package com.example.tbike;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +19,90 @@ public class Connection {
             instance = new Connection();
         }
         return instance;
+    }
+
+    /**
+     * GET /score
+     * Authorization: {auth_key}
+     * Content-Type: application/json
+     */
+    public String score() throws IOException {
+        HttpURLConnection conn = null;
+        JSONObject responseJson = null;
+
+
+        URL url = new URL(BASE_URL + "/score");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", KeyManager.getInstance().getAuth_Key());
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setConnectTimeout(10000);
+        conn.setReadTimeout(5000);
+        conn.setDoOutput(true);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+        JSONObject commands = new JSONObject();
+
+        bw.flush();
+        bw.close();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            responseJson = new JSONObject(sb.toString());
+        } else {
+            printErrorMessage(responseCode);
+        }
+
+        return responseJson.getString("score");
+    }
+
+
+    /**
+     * PUT /simulate
+     * Authorization: {auth_key}
+     * Content-Type: application/json
+     */
+    public JSONObject simulate(JSONObject commandMap) throws IOException {
+        HttpURLConnection conn = null;
+        JSONObject responseJson = null;
+
+
+        URL url = new URL(BASE_URL + "/simulate");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("PUT");
+        conn.setRequestProperty("Authorization", KeyManager.getInstance().getAuth_Key());
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setConnectTimeout(10000);
+        conn.setReadTimeout(5000);
+        conn.setDoOutput(true);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+        JSONObject commands = new JSONObject();
+        commands.put("commands", commandMap);
+        bw.write(commands.toString());
+        bw.flush();
+        bw.close();
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            responseJson = new JSONObject(sb.toString());
+        } else {
+            printErrorMessage(responseCode);
+        }
+
+        return responseJson;
     }
 
     /**
