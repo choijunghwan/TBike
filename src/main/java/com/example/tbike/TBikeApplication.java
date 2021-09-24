@@ -8,6 +8,8 @@ public class TBikeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TBikeApplication.class, args);
+
+
     }
 
 }
